@@ -472,19 +472,42 @@ namespace terminal_chess.Core
             Position orgRookPos = new Position(7, Side == PlayerColor.White ? 7 : 0);
             Piece piece1 = GetPiece(orgKingPos);
             Piece piece2 = GetPiece(orgRookPos);
+            // Check original position
             if (piece1.Type == PieceType.King && piece2.Type == PieceType.Rook)
             {
-                moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 6 : 1)));
-                moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 5 : 2)));
+                // Check obstacles
+                int dir = Side == PlayerColor.White ? 1 : -1;
+                Piece obstacle1 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 1 * dir));
+                Piece obstacle2 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 2 * dir));
+
+                if (obstacle1.Type == PieceType.None && obstacle2.Type == PieceType.None)
+                {
+                    Console.WriteLine("KingBUG");
+                    moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 6 : 1)));
+                    moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 5 : 2)));
+                }
             }
 
             // Castle queen side
             Position orgRookPosQ = new Position(7, Side == PlayerColor.White ? 0 : 7);
             Piece piece3 = GetPiece(orgRookPos);
+            // Check original position
             if (piece1.Type == PieceType.King && piece3.Type == PieceType.Rook)
             {
-                moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 2 : 5)));
-                moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 3 : 4)));
+                // Check obstacles
+                int dir = Side == PlayerColor.White ? -1 : 1;
+                Piece obstacle1 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 1 * dir));
+                Piece obstacle2 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 2 * dir));
+                Piece obstacle3 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 3 * dir));
+
+                if (obstacle1.Type == PieceType.None &&
+                    obstacle2.Type == PieceType.None &&
+                    obstacle3.Type == PieceType.None)
+                {
+                    Console.WriteLine("QueenBUG");
+                    moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 2 : 5)));
+                    moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 3 : 4)));
+                }
             }
 
             return moves;
@@ -522,7 +545,26 @@ namespace terminal_chess.Core
             return moves;
         }
 
-        public Move ParseMove(string moveInput)
+        public void MovePiece(Move move)
+        {
+            // Check if promotion move
+            if (move.PromotionPiece != PieceType.None)
+            {
+                this.BoardChess[move.To.Row, move.To.Col] = new Piece(move.PromotionPiece, Side, this.GetPointFromPieceType(move.PromotionPiece), this.GetDisplayFromTypeColor(move.PromotionPiece, Side), new Position(move.To.Row, move.To.Col));
+            }
+            else
+            {
+                this.BoardChess[move.To.Row, move.To.Col] = this.BoardChess[move.From.Row, move.From.Col];
+                this.BoardChess[move.To.Row, move.To.Col].Position = new Position(move.To.Row, move.To.Col);
+            }
+            // Turn old position into none square
+            if (move.From.Row % 2 == 0)
+                this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
+            else
+                this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+        }
+
+        public Move ParseMove(string moveInput, CastlingRights castling)
         {
             // Normalize user's input
             string originalInput = moveInput;
@@ -534,16 +576,40 @@ namespace terminal_chess.Core
             // Castle
             if (moveInput == "O-O" || moveInput == "0-0")
             {
-                return legalMoves.FirstOrDefault(move =>
-                    GetPiece(move.From).Type == PieceType.King &&
-                    Math.Abs(move.To.Col - move.From.Col) == 2);
+                if ((Side == PlayerColor.White && castling.WhiteCanCastleKingside) ||
+                    (Side == PlayerColor.Black && castling.BlackCanCastleKingside))
+                {
+                    int dir = Side == PlayerColor.White ? 1 : -1;
+                    Move kingMove = legalMoves.FirstOrDefault(move =>
+                        GetPiece(move.From).Type == PieceType.King &&
+                        move.To.Col - move.From.Col == 2 * dir);
+                    Move rookMove = legalMoves.FirstOrDefault(move =>
+                        GetPiece(move.From).Type == PieceType.Rook &&
+                        move.To.Col - move.From.Col == -2 * dir);
+                    // Move the rook
+                    if (kingMove != null && rookMove != null)
+                        this.MovePiece(rookMove);
+                    return kingMove;
+                }
             }
 
             if (moveInput == "O-O-O" || moveInput == "0-0-0")
             {
-                return legalMoves.FirstOrDefault(move =>
-                    GetPiece(move.From).Type == PieceType.King &&
-                    Math.Abs(move.To.Col - move.From.Col) == 3);
+                if ((Side == PlayerColor.White && castling.WhiteCanCastleQueenside) ||
+                      (Side == PlayerColor.Black && castling.BlackCanCastleQueenside))
+                {
+                    int dir = Side == PlayerColor.White ? -1 : 1;
+                    Move kingMove = legalMoves.FirstOrDefault(move =>
+                        GetPiece(move.From).Type == PieceType.King &&
+                        move.To.Col - move.From.Col == 2 * dir);
+                    Move rookMove = legalMoves.FirstOrDefault(move =>
+                        GetPiece(move.From).Type == PieceType.Rook &&
+                        move.To.Col - move.From.Col == -3 * dir);
+                    // Move the rook
+                    if (kingMove != null && rookMove != null)
+                        this.MovePiece(rookMove);
+                    return kingMove;
+                }
             }
 
             // Others

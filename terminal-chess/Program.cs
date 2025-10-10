@@ -8,10 +8,15 @@ using terminal_chess.Core.Models;
 Console.OutputEncoding = Encoding.UTF8;
 
 // Play
+Console.WriteLine(@" _____________  __  ________  _____   __     _______ ______________
+/_  __/ __/ _ \/  |/  /  _/ |/ / _ | / /    / ___/ // / __/ __/ __/
+ / / / _// , _/ /|_/ // //    / __ |/ /__  / /__/ _  / _/_\ \_\ \  
+/_/ /___/_/|_/_/  /_/___/_/|_/_/ |_/____/  \___/_//_/___/___/___/  
+                                                                   ");
 bool isValid = true;
 do
 {
-    Console.WriteLine("Choose your side (0 = White; 1 = Black; default = 0):");
+    Console.WriteLine("Choose your side (0 = White; 1 = Black; default = White):");
     string? side = Console.ReadLine();
     if (string.IsNullOrEmpty(side))
         side = "0";
@@ -25,21 +30,25 @@ do
             PlayerColor player = (PlayerColor)n;
             string playerStr = player == PlayerColor.White ? "White" : "Black";
             GameState game = new GameState(player);
+            bool render = true;
 
             // Game loop
             while (game.Status == GameStatus.Ongoing)
             {
-                game.RenderBoard(game);
+                if (render)
+                    game.RenderBoard(game);
                 //if (game.CurrentPlayer == player)
                 //{
                 Console.WriteLine($"{playerStr} to move:");
                 string moveInput = Console.ReadLine();
-                Move parsedMove = game.Board.ParseMove(moveInput);
+                Move parsedMove = game.Board.ParseMove(moveInput, game.CastlingRights);
                 if (parsedMove == null)
                 {
-                    Console.WriteLine("Invalid move");
+                    Console.WriteLine("INVALID MOVE!");
+                    render = false;
                     continue;
                 }
+                else render = true;
 
                 game = game.MakeMove(parsedMove);
                 //}
@@ -47,13 +56,13 @@ do
         }
         else
         {
-            Console.WriteLine("Invalid input");
+            Console.WriteLine("INVALID INPUT!");
             isValid = false;
         }
     }
     else
     {
-        Console.WriteLine("Invalid input");
+        Console.WriteLine("INVALID INPUT!");
         isValid = false;
     }
 } while (!isValid);
