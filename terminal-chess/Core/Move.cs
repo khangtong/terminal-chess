@@ -13,11 +13,16 @@ namespace terminal_chess.Core
         public Position To;
         public PieceType PromotionPiece;
 
-        public Move(Position From1, Position To1, PieceType PromotionPiece1 = PieceType.None)
+        public Move(Position from1, Position to1, PieceType promotionPiece1 = PieceType.None)
         {
-            From = From1;
-            To = To1;
-            PromotionPiece = PromotionPiece1;
+            From = from1;
+            To = to1;
+            PromotionPiece = promotionPiece1;
+        }
+
+        public override string ToString()
+        {
+            return $"{From}-{To}";
         }
     }
 }

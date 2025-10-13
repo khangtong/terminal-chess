@@ -78,35 +78,47 @@ namespace terminal_chess.Core
         public void RenderBoard(GameState state)
         {
             Console.WriteLine("+--------------------------------+");
-            for (int i = 0; i < 9; i++)
-            {
-                if (i == 8)
+            if (state.CurrentPlayer == PlayerColor.White)
+                for (int i = 0; i < 8; i++)
                 {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        Console.Write("   " + (char)(Board.Side == PlayerColor.White ? j + 97 : 104 - j));
-                    }
-                }
-                else
-                {
-                    Console.Write(" " + (Board.Side == PlayerColor.White ? 8 - i : i + 1) + " ");
+                    Console.Write(" " + (8 - i) + " ");
                     for (int j = 0; j < 8; j++)
                     {
                         Console.Write(state.Board.BoardChess[i, j] + "  ");
                     }
+                    Console.WriteLine("");
                 }
-                Console.WriteLine("");
-            }
+            else
+                for (int i = 0; i < 9; i++)
+                {
+                    if (i == 8)
+                    {
+                        for (int j = 0; j < 8; j++)
+                        {
+                            Console.Write("   " + (char)(104 - j));
+                        }
+                    }
+                    else
+                    {
+                        Console.Write(" " + (i + 1) + " ");
+                        for (int j = 0; j < 8; j++)
+                        {
+                            Console.Write(state.Board.BoardChess[7 - i, 7 - j] + "  ");
+                        }
+                    }
+                    Console.WriteLine("");
+                }
             Console.WriteLine("+--------------------------------+");
         }
 
         public GameState MakeMove(Move move)
         {
+            Board.Side = CurrentPlayer == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
             GameState newGameState = new GameState(this);
             ulong newHash = ZobristHash;
 
             // Update full move number
-            if (CurrentPlayer != Board.Side)
+            if (CurrentPlayer == PlayerColor.Black)
             {
                 newGameState.FullmoveNumber = FullmoveNumber + 1;
             }
@@ -205,23 +217,25 @@ namespace terminal_chess.Core
                 }
             }
 
-            // Check if promotion move
-            if (move.PromotionPiece != PieceType.None)
-            {
-                newGameState.Board.BoardChess[move.To.Row, move.To.Col] = new Piece(move.PromotionPiece, Board.Side, Board.GetPointFromPieceType(move.PromotionPiece), Board.GetDisplayFromTypeColor(move.PromotionPiece, Board.Side), new Position(move.To.Row, move.To.Col));
-            }
-            else
-            {
-                newGameState.Board.BoardChess[move.To.Row, move.To.Col] = Board.BoardChess[move.From.Row, move.From.Col];
-                newGameState.Board.BoardChess[move.To.Row, move.To.Col].Position = new Position(move.To.Row, move.To.Col);
-            }
-            // Turn old position into none square
-            if (move.From.Row % 2 == 0)
-                newGameState.Board.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
-            else
-                newGameState.Board.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+            // Move piece
+            newGameState.Board.MovePiece(move);
 
             // En Passant
+            if (movedPiece.Type == PieceType.Pawn && Math.Abs(move.To.Row - move.From.Row) == 2)
+            {
+                Piece piece1 = Board.BoardChess[move.To.Row, move.To.Col + 1];
+                Piece piece2 = Board.BoardChess[move.To.Row, move.To.Col - 1];
+                if (piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer)
+                {
+                    EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col + 1);
+                    newHash ^= Zobrist.EnPassantFileKeys[EnPassantTargetSquare.Col];
+                }
+                if (piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer)
+                {
+                    EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col - 1);
+                    newHash ^= Zobrist.EnPassantFileKeys[EnPassantTargetSquare.Col];
+                }
+            }
 
             // Switch turn
             newHash ^= Zobrist.BlackToMoveKey;

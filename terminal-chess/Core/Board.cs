@@ -538,6 +538,7 @@ namespace terminal_chess.Core
                                 moves.AddRange(GetRookMoves(BoardChess[i, j].Position));
                                 break;
                             default:
+                                Console.WriteLine(BoardChess[i, j].Position);
                                 moves.AddRange(GetPawnMoves(BoardChess[i, j].Position));
                                 break;
                         }
@@ -614,6 +615,8 @@ namespace terminal_chess.Core
 
             // Others
             List<Move> candidateMoves = new List<Move>(legalMoves);
+            //foreach (Move move in candidateMoves)
+            //    Console.WriteLine(move);
 
             // 1. Destination
             var destResult = FindAndParseDestinationSquare(moveInput);

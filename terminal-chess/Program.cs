@@ -28,13 +28,13 @@ do
             isValid = true;
             // Init game state
             PlayerColor player = (PlayerColor)n;
-            string playerStr = player == PlayerColor.White ? "White" : "Black";
             GameState game = new GameState(player);
             bool render = true;
 
             // Game loop
             while (game.Status == GameStatus.Ongoing)
             {
+                string playerStr = game.CurrentPlayer == PlayerColor.White ? "White" : "Black";
                 if (render)
                     game.RenderBoard(game);
                 //if (game.CurrentPlayer == player)
