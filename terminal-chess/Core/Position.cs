@@ -27,5 +27,10 @@ namespace terminal_chess.Core.Models
         {
             return $"[{Row}, {Col}]";
         }
+
+        public bool Equals(Position p)
+        {
+            return this.Row == p.Row && this.Col == p.Col;
+        }
     }
 }

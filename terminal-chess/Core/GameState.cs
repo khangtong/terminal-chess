@@ -79,6 +79,7 @@ namespace terminal_chess.Core
         {
             Console.WriteLine("+--------------------------------+");
             if (state.CurrentPlayer == PlayerColor.White)
+            {
                 for (int i = 0; i < 8; i++)
                 {
                     Console.Write(" " + (8 - i) + " ");
@@ -88,32 +89,27 @@ namespace terminal_chess.Core
                     }
                     Console.WriteLine("");
                 }
+                Console.WriteLine("   a   b   c   d   e   f   g   h");
+            }
             else
-                for (int i = 0; i < 9; i++)
+            {
+                for (int i = 7; i >= 0; i--)
                 {
-                    if (i == 8)
+                    Console.Write(" " + (7 - i + 1) + " ");
+                    for (int j = 7; j >= 0; j--)
                     {
-                        for (int j = 0; j < 8; j++)
-                        {
-                            Console.Write("   " + (char)(104 - j));
-                        }
-                    }
-                    else
-                    {
-                        Console.Write(" " + (i + 1) + " ");
-                        for (int j = 0; j < 8; j++)
-                        {
-                            Console.Write(state.Board.BoardChess[7 - i, 7 - j] + "  ");
-                        }
+                        Console.Write(state.Board.BoardChess[i, j] + "  ");
                     }
                     Console.WriteLine("");
                 }
+                Console.WriteLine("   h   g   f   e   d   c   b   a");
+            }
             Console.WriteLine("+--------------------------------+");
         }
 
         public GameState MakeMove(Move move)
         {
-            Board.Side = CurrentPlayer == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
+            Board.Side = 1 - Board.Side;
             GameState newGameState = new GameState(this);
             ulong newHash = ZobristHash;
 
@@ -225,21 +221,17 @@ namespace terminal_chess.Core
             {
                 Piece piece1 = Board.BoardChess[move.To.Row, move.To.Col + 1];
                 Piece piece2 = Board.BoardChess[move.To.Row, move.To.Col - 1];
-                if (piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer)
+                if ((piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer) ||
+                    (piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer))
                 {
-                    EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col + 1);
-                    newHash ^= Zobrist.EnPassantFileKeys[EnPassantTargetSquare.Col];
-                }
-                if (piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer)
-                {
-                    EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col - 1);
-                    newHash ^= Zobrist.EnPassantFileKeys[EnPassantTargetSquare.Col];
+                    newGameState.EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col);
+                    newHash ^= Zobrist.EnPassantFileKeys[newGameState.EnPassantTargetSquare.Col];
                 }
             }
 
             // Switch turn
             newHash ^= Zobrist.BlackToMoveKey;
-            newGameState.CurrentPlayer = CurrentPlayer == PlayerColor.White ? PlayerColor.Black : PlayerColor.White;
+            newGameState.CurrentPlayer = 1 - CurrentPlayer;
 
             // Update position history
             newGameState.PositionHistory = new Dictionary<ulong, int>(PositionHistory);

@@ -37,33 +37,33 @@ namespace terminal_chess.Core
                         {
                             if (j == 0 || j == 7)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Rook, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 5, Side == PlayerColor.White ? "bR" : "wR", new Position(i, j));
+                                BoardChess[i, j] = new Piece(PieceType.Rook, 1 - Side, 5, Side == PlayerColor.White ? "bR" : "wR", new Position(i, j));
                             }
 
                             if (j == 1 || j == 6)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Knight, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 3, Side == PlayerColor.White ? "bN" : "wN", new Position(i, j));
+                                BoardChess[i, j] = new Piece(PieceType.Knight, 1 - Side, 3, Side == PlayerColor.White ? "bN" : "wN", new Position(i, j));
                             }
 
                             if (j == 2 || j == 5)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Bishop, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 3, Side == PlayerColor.White ? "bB" : "wB", new Position(i, j));
+                                BoardChess[i, j] = new Piece(PieceType.Bishop, 1 - Side, 3, Side == PlayerColor.White ? "bB" : "wB", new Position(i, j));
                             }
 
                             if (j == 3)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Queen, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 9, Side == PlayerColor.White ? "bQ" : "wK", new Position(i, j));
+                                BoardChess[i, j] = new Piece(PieceType.Queen, 1 - Side, 9, Side == PlayerColor.White ? "bQ" : "wK", new Position(i, j));
                             }
 
                             if (j == 4)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.King, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 0, Side == PlayerColor.White ? "bK" : "wQ", new Position(i, j));
+                                BoardChess[i, j] = new Piece(PieceType.King, 1 - Side, 0, Side == PlayerColor.White ? "bK" : "wQ", new Position(i, j));
                             }
                         }
 
                         if (i == 1)
                         {
-                            BoardChess[i, j] = new Piece(PieceType.Pawn, Side == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, 1, Side == PlayerColor.White ? "bP" : "wP", new Position(i, j));
+                            BoardChess[i, j] = new Piece(PieceType.Pawn, 1 - Side, 1, Side == PlayerColor.White ? "bP" : "wP", new Position(i, j));
                         }
 
                         if (i == 6)
@@ -240,7 +240,7 @@ namespace terminal_chess.Core
 
         public bool IsSquareAttacked(Position position, PlayerColor atkColor)
         {
-            List<Move> moves = GetLegalMoves(atkColor);
+            List<Move> moves = GetLegalMoves(atkColor, null);
             foreach (Move move in moves)
             {
                 if (move.To.Equals(position)) return true;
@@ -378,33 +378,34 @@ namespace terminal_chess.Core
             return moves;
         }
 
-        public List<Move> GetPawnMoves(Position pos)
+        public List<Move> GetPawnMoves(Position pos, Position? enPassantSq)
         {
             List<Move> moves = new List<Move>();
             Piece movingPiece = GetPiece(pos);
+            int dir = movingPiece.Color == PlayerColor.White ? -1 : 1;
             // 1-step moves
-            if (IsInBounds(new Position(pos.Row - 1, pos.Col)) && IsSquareEmpty(new Position(pos.Row - 1, pos.Col)))
+            if (IsInBounds(new Position(pos.Row + dir, pos.Col)) && IsSquareEmpty(new Position(pos.Row + dir, pos.Col)))
                 // Promotion
-                if (pos.Row - 1 == 0)
+                if (pos.Row + dir == 0)
                 {
-                    moves.Add(new Move(pos, new Position(pos.Row - 1, pos.Col), PieceType.Queen));
-                    moves.Add(new Move(pos, new Position(pos.Row - 1, pos.Col), PieceType.Rook));
-                    moves.Add(new Move(pos, new Position(pos.Row - 1, pos.Col), PieceType.Bishop));
-                    moves.Add(new Move(pos, new Position(pos.Row - 1, pos.Col), PieceType.Knight));
+                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Queen));
+                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Rook));
+                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Bishop));
+                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Knight));
                 }
                 else
-                    moves.Add(new Move(pos, new Position(pos.Row - 1, pos.Col)));
+                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col)));
 
             // 2-step moves
-            if (pos.Row == 6)
-                if (IsSquareEmpty(new Position(pos.Row - 1, pos.Col)) && IsSquareEmpty(new Position(pos.Row - 2, pos.Col)))
+            if ((pos.Row == 6 && Side == PlayerColor.White) || (pos.Row == 1 && Side == PlayerColor.Black))
+                if (IsSquareEmpty(new Position(pos.Row + dir, pos.Col)) && IsSquareEmpty(new Position(pos.Row + 2 * dir, pos.Col)))
                 {
-                    moves.Add(new Move(pos, new Position(pos.Row - 2, pos.Col)));
+                    moves.Add(new Move(pos, new Position(pos.Row + 2 * dir, pos.Col)));
                 }
 
             // take pieces
-            Position diag1 = new Position(pos.Row - 1, pos.Col - 1);
-            Position diag2 = new Position(pos.Row - 1, pos.Col + 1);
+            Position diag1 = new Position(pos.Row + dir, pos.Col - 1);
+            Position diag2 = new Position(pos.Row + dir, pos.Col + 1);
             if (IsInBounds(diag1))
             {
                 Piece capturedPiece = GetPiece(diag1);
@@ -437,6 +438,12 @@ namespace terminal_chess.Core
             }
 
             // En passant
+            if (enPassantSq != null)
+            {
+                if (pos.Row + dir == enPassantSq.Row &&
+                   (pos.Col - 1 == enPassantSq.Col || pos.Col + 1 == enPassantSq.Col))
+                    moves.Add(new Move(pos, enPassantSq));
+            }
 
             return moves;
         }
@@ -468,34 +475,33 @@ namespace terminal_chess.Core
             }
 
             // Castle king side
-            Position orgKingPos = new Position(7, Side == PlayerColor.White ? 4 : 3);
-            Position orgRookPos = new Position(7, Side == PlayerColor.White ? 7 : 0);
+            Position orgKingPos = new Position(Side == PlayerColor.White ? 7 : 0, 4);
+            Position orgRookPos = new Position(Side == PlayerColor.White ? 7 : 0, 7);
             Piece piece1 = GetPiece(orgKingPos);
             Piece piece2 = GetPiece(orgRookPos);
             // Check original position
             if (piece1.Type == PieceType.King && piece2.Type == PieceType.Rook)
             {
                 // Check obstacles
-                int dir = Side == PlayerColor.White ? 1 : -1;
+                int dir = 1;
                 Piece obstacle1 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 1 * dir));
                 Piece obstacle2 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 2 * dir));
 
                 if (obstacle1.Type == PieceType.None && obstacle2.Type == PieceType.None)
                 {
-                    Console.WriteLine("KingBUG");
-                    moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 6 : 1)));
-                    moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 5 : 2)));
+                    moves.Add(new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 6)));
+                    moves.Add(new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 5)));
                 }
             }
 
             // Castle queen side
-            Position orgRookPosQ = new Position(7, Side == PlayerColor.White ? 0 : 7);
+            Position orgRookPosQ = new Position(Side == PlayerColor.White ? 7 : 0, 0);
             Piece piece3 = GetPiece(orgRookPos);
             // Check original position
             if (piece1.Type == PieceType.King && piece3.Type == PieceType.Rook)
             {
                 // Check obstacles
-                int dir = Side == PlayerColor.White ? -1 : 1;
+                int dir = -1;
                 Piece obstacle1 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 1 * dir));
                 Piece obstacle2 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 2 * dir));
                 Piece obstacle3 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 3 * dir));
@@ -504,16 +510,15 @@ namespace terminal_chess.Core
                     obstacle2.Type == PieceType.None &&
                     obstacle3.Type == PieceType.None)
                 {
-                    Console.WriteLine("QueenBUG");
-                    moves.Add(new Move(orgKingPos, new Position(7, Side == PlayerColor.White ? 2 : 5)));
-                    moves.Add(new Move(orgRookPos, new Position(7, Side == PlayerColor.White ? 3 : 4)));
+                    moves.Add(new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 2)));
+                    moves.Add(new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 3)));
                 }
             }
 
             return moves;
         }
 
-        public List<Move> GetLegalMoves(PlayerColor color)
+        public List<Move> GetLegalMoves(PlayerColor color, Position? enPassantSq)
         {
             List<Move> moves = new List<Move>();
             for (int i = 0; i < 8; i++)
@@ -538,8 +543,7 @@ namespace terminal_chess.Core
                                 moves.AddRange(GetRookMoves(BoardChess[i, j].Position));
                                 break;
                             default:
-                                Console.WriteLine(BoardChess[i, j].Position);
-                                moves.AddRange(GetPawnMoves(BoardChess[i, j].Position));
+                                moves.AddRange(GetPawnMoves(BoardChess[i, j].Position, enPassantSq));
                                 break;
                         }
                 }
@@ -563,16 +567,18 @@ namespace terminal_chess.Core
                 this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
             else
                 this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+            // En Passant
         }
 
-        public Move ParseMove(string moveInput, CastlingRights castling)
+        public Move ParseMove(string moveInput, CastlingRights castling, Position? enPassantSq)
         {
             // Normalize user's input
             string originalInput = moveInput;
             moveInput = moveInput.Trim().Replace("+", "").Replace("#", "").Replace("!", "").Replace("?", "");
 
             // Get legal moves
-            List<Move> legalMoves = GetLegalMoves(Side);
+            List<Move> legalMoves = GetLegalMoves(Side, enPassantSq);
+            List<Move> enemyLegalMoves = GetLegalMoves(1 - Side, enPassantSq);
 
             // Castle
             if (moveInput == "O-O" || moveInput == "0-0")
@@ -580,13 +586,25 @@ namespace terminal_chess.Core
                 if ((Side == PlayerColor.White && castling.WhiteCanCastleKingside) ||
                     (Side == PlayerColor.Black && castling.BlackCanCastleKingside))
                 {
-                    int dir = Side == PlayerColor.White ? 1 : -1;
+                    Position kingSq = new Position(Side == PlayerColor.White ? 7 : 0, 4);
+                    Position square1 = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 1);
+                    Position square2 = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 2);
+                    Position rookSq = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 3);
+                    // Check if any enemy pieces can block or check on the king's castle road
+                    foreach (Move m in enemyLegalMoves)
+                    {
+                        Piece piece = GetPiece(m.From);
+                        if (m.To.Equals(kingSq) || m.To.Equals(square1) ||
+                            m.To.Equals(square2) || m.To.Equals(rookSq))
+                            if (piece.Type != PieceType.None && piece.Color != Side)
+                                return null;
+                    }
                     Move kingMove = legalMoves.FirstOrDefault(move =>
                         GetPiece(move.From).Type == PieceType.King &&
-                        move.To.Col - move.From.Col == 2 * dir);
+                        move.To.Col - move.From.Col == 2);
                     Move rookMove = legalMoves.FirstOrDefault(move =>
                         GetPiece(move.From).Type == PieceType.Rook &&
-                        move.To.Col - move.From.Col == -2 * dir);
+                        move.To.Col - move.From.Col == -2);
                     // Move the rook
                     if (kingMove != null && rookMove != null)
                         this.MovePiece(rookMove);
@@ -599,13 +617,26 @@ namespace terminal_chess.Core
                 if ((Side == PlayerColor.White && castling.WhiteCanCastleQueenside) ||
                       (Side == PlayerColor.Black && castling.BlackCanCastleQueenside))
                 {
-                    int dir = Side == PlayerColor.White ? -1 : 1;
+                    Position kingSq = new Position(Side == PlayerColor.White ? 7 : 0, 4);
+                    Position square1 = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 1);
+                    Position square2 = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 2);
+                    Position square3 = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 3);
+                    Position rookSq = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 4);
+                    // Check if any enemy pieces can block or check on the king's castle road
+                    foreach (Move m in enemyLegalMoves)
+                    {
+                        Piece piece = GetPiece(m.From);
+                        if (m.To.Equals(kingSq) || m.To.Equals(square1) ||
+                            m.To.Equals(square2) || m.To.Equals(square3) || m.To.Equals(rookSq))
+                            if (piece.Type != PieceType.None && piece.Color != Side)
+                                return null;
+                    }
                     Move kingMove = legalMoves.FirstOrDefault(move =>
                         GetPiece(move.From).Type == PieceType.King &&
-                        move.To.Col - move.From.Col == 2 * dir);
+                        move.To.Col - move.From.Col == -2);
                     Move rookMove = legalMoves.FirstOrDefault(move =>
                         GetPiece(move.From).Type == PieceType.Rook &&
-                        move.To.Col - move.From.Col == -3 * dir);
+                        move.To.Col - move.From.Col == 3);
                     // Move the rook
                     if (kingMove != null && rookMove != null)
                         this.MovePiece(rookMove);
@@ -616,12 +647,18 @@ namespace terminal_chess.Core
             // Others
             List<Move> candidateMoves = new List<Move>(legalMoves);
             //foreach (Move move in candidateMoves)
-            //    Console.WriteLine(move);
+            //        Console.WriteLine(move);
 
             // 1. Destination
             var destResult = FindAndParseDestinationSquare(moveInput);
             if (destResult.pos == null) return null;
             Position destination = destResult.pos;
+            // Change destination on black side (2-players mode)
+            if (Side == PlayerColor.Black)
+            {
+                destination.Row = 7 - destination.Row;
+                destination.Col = 7 - destination.Col;
+            }
             int destIndex = destResult.index;
 
             // Filter moves reaching the destination

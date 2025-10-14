@@ -41,7 +41,7 @@ do
                 //{
                 Console.WriteLine($"{playerStr} to move:");
                 string moveInput = Console.ReadLine();
-                Move parsedMove = game.Board.ParseMove(moveInput, game.CastlingRights);
+                Move parsedMove = game.Board.ParseMove(moveInput, game.CastlingRights, game.EnPassantTargetSquare);
                 if (parsedMove == null)
                 {
                     Console.WriteLine("INVALID MOVE!");
