@@ -109,7 +109,6 @@ namespace terminal_chess.Core
 
         public GameState MakeMove(Move move)
         {
-            Board.Side = 1 - Board.Side;
             GameState newGameState = new GameState(this);
             ulong newHash = ZobristHash;
 
@@ -134,9 +133,12 @@ namespace terminal_chess.Core
                 newGameState.Status = GameStatus.DrawByFiftyMoveRule;
             }
 
-            // XOR remove old enpassant square
+            // XOR remove old enpassant square on the new game state
             if (EnPassantTargetSquare != null)
+            {
+                newGameState.EnPassantTargetSquare = null;
                 newHash ^= Zobrist.EnPassantFileKeys[EnPassantTargetSquare.Col];
+            }
 
             // XOR remove moving piece from old square
             newHash ^= Zobrist.PieceKeys[movedPieceIndex, fromSquareIndex];
@@ -213,23 +215,26 @@ namespace terminal_chess.Core
                 }
             }
 
-            // Move piece
-            newGameState.Board.MovePiece(move);
-
             // En Passant
             if (movedPiece.Type == PieceType.Pawn && Math.Abs(move.To.Row - move.From.Row) == 2)
             {
-                Piece piece1 = Board.BoardChess[move.To.Row, move.To.Col + 1];
-                Piece piece2 = Board.BoardChess[move.To.Row, move.To.Col - 1];
-                if ((piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer) ||
-                    (piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer))
+                Piece piece1 = move.To.Col + 1 < 8 ? Board.BoardChess[move.To.Row, move.To.Col + 1] : null;
+                Piece piece2 = move.To.Col - 1 >= 0 ? Board.BoardChess[move.To.Row, move.To.Col - 1] : null;
+                if ((piece1 != null && piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer) ||
+                    (piece2 != null && piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer))
                 {
-                    newGameState.EnPassantTargetSquare = new Position(move.To.Row - 1, move.To.Col);
+                    // Create en passant move on the new game state
+                    int dir = 1 - CurrentPlayer == PlayerColor.White ? -1 : 1;
+                    newGameState.EnPassantTargetSquare = new Position(move.To.Row + dir, move.To.Col);
                     newHash ^= Zobrist.EnPassantFileKeys[newGameState.EnPassantTargetSquare.Col];
                 }
             }
 
+            // Move piece (include the en passant square creating from the previous game state)
+            newGameState.Board.MovePiece(move, EnPassantTargetSquare);
+
             // Switch turn
+            Board.Side = 1 - Board.Side;
             newHash ^= Zobrist.BlackToMoveKey;
             newGameState.CurrentPlayer = 1 - CurrentPlayer;
 

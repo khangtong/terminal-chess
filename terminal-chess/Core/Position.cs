@@ -28,8 +28,9 @@ namespace terminal_chess.Core.Models
             return $"[{Row}, {Col}]";
         }
 
-        public bool Equals(Position p)
+        public bool Equals(Position? p)
         {
+            if (p == null) return false;
             return this.Row == p.Row && this.Col == p.Col;
         }
     }

@@ -550,7 +550,7 @@ namespace terminal_chess.Core
             return moves;
         }
 
-        public void MovePiece(Move move)
+        public void MovePiece(Move move, Position? enPassantSq)
         {
             // Check if promotion move
             if (move.PromotionPiece != PieceType.None)
@@ -563,11 +563,23 @@ namespace terminal_chess.Core
                 this.BoardChess[move.To.Row, move.To.Col].Position = new Position(move.To.Row, move.To.Col);
             }
             // Turn old position into none square
+            int dir = Side == PlayerColor.White ? 1 : -1;
             if (move.From.Row % 2 == 0)
+            {
                 this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
+                // En Passant
+                if (this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn &&
+                move.To.Equals(enPassantSq))
+                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+            }
             else
+            {
                 this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
-            // En Passant
+                // En Passant
+                if (this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn &&
+                move.To.Equals(enPassantSq))
+                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
+            }
         }
 
         public Move ParseMove(string moveInput, CastlingRights castling, Position? enPassantSq)
@@ -607,7 +619,7 @@ namespace terminal_chess.Core
                         move.To.Col - move.From.Col == -2);
                     // Move the rook
                     if (kingMove != null && rookMove != null)
-                        this.MovePiece(rookMove);
+                        this.MovePiece(rookMove, null);
                     return kingMove;
                 }
             }
@@ -639,7 +651,7 @@ namespace terminal_chess.Core
                         move.To.Col - move.From.Col == 3);
                     // Move the rook
                     if (kingMove != null && rookMove != null)
-                        this.MovePiece(rookMove);
+                        this.MovePiece(rookMove, null);
                     return kingMove;
                 }
             }
