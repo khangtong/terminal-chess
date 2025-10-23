@@ -85,7 +85,7 @@ namespace terminal_chess.Core
                     Console.Write(" " + (8 - i) + " ");
                     for (int j = 0; j < 8; j++)
                     {
-                        Console.Write(state.Board.BoardChess[i, j] + "  ");
+                        Console.Write(state.Board.BoardChess[i, j].Display + "  ");
                     }
                     Console.WriteLine("");
                 }
@@ -98,7 +98,7 @@ namespace terminal_chess.Core
                     Console.Write(" " + (7 - i + 1) + " ");
                     for (int j = 7; j >= 0; j--)
                     {
-                        Console.Write(state.Board.BoardChess[i, j] + "  ");
+                        Console.Write(state.Board.BoardChess[i, j].Display + "  ");
                     }
                     Console.WriteLine("");
                 }

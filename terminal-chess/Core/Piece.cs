@@ -52,7 +52,7 @@ namespace terminal_chess.Core.Models
 
         public override string ToString()
         {
-            return Display;
+            return $"{Display}{Position}";
         }
     }
 }

@@ -675,6 +675,8 @@ namespace terminal_chess.Core
 
             // Filter moves reaching the destination
             candidateMoves = candidateMoves.Where(m => m.To.Row == destination.Row && m.To.Col == destination.Col).ToList();
+            //foreach (Move move in candidateMoves)
+            //    Console.WriteLine(move);
             if (candidateMoves.Count == 0) return null;
 
             string suffix = moveInput.Substring(destIndex + 2);
@@ -706,18 +708,30 @@ namespace terminal_chess.Core
             if (candidateMoves.Count > 1)
             {
                 string disambiguatorStr = prefix.Replace("x", "");
-                if (disambiguatorStr.Length > 1)
+                if (pieceType == PieceType.Pawn)
                 {
-                    char disambiguator = disambiguatorStr[1];
-                    if (disambiguator >= 'a' && disambiguator <= 'h')
+                    if (disambiguatorStr.Length > 0)
                     {
-                        int fromCol = Side == PlayerColor.White ? disambiguator - 'a' : 'h' - disambiguator;
+                        char disambiguator = disambiguatorStr[0];
+                        int fromCol = Side == PlayerColor.White ? disambiguator - 'a' : 7 - ('h' - disambiguator);
                         candidateMoves = candidateMoves.Where(m => m.From.Col == fromCol).ToList();
                     }
-                    else if (disambiguator >= '1' && disambiguator <= '8')
+                }
+                else
+                {
+                    if (disambiguatorStr.Length > 1)
                     {
-                        int fromRow = Side == PlayerColor.White ? 8 - (disambiguator - '0') : disambiguator - '1';
-                        candidateMoves = candidateMoves.Where(m => m.From.Row == fromRow).ToList();
+                        char disambiguator = disambiguatorStr[1];
+                        if (disambiguator >= 'a' && disambiguator <= 'h')
+                        {
+                            int fromCol = Side == PlayerColor.White ? disambiguator - 'a' : 7 - ('h' - disambiguator);
+                            candidateMoves = candidateMoves.Where(m => m.From.Col == fromCol).ToList();
+                        }
+                        else if (disambiguator >= '1' && disambiguator <= '8')
+                        {
+                            int fromRow = 8 - (disambiguator - '0');
+                            candidateMoves = candidateMoves.Where(m => m.From.Row == fromRow).ToList();
+                        }
                     }
                 }
             }
