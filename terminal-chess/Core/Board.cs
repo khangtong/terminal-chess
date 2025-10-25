@@ -21,8 +21,8 @@ namespace terminal_chess.Core
         {
             BoardChess = new Piece[8, 8];
             for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    BoardChess[i, j] = new Piece(board.BoardChess[i, j]);
+            for (int j = 0; j < 8; j++)
+                BoardChess[i, j] = new Piece(board.BoardChess[i, j]);
         }
 
         public void InitializeBoard()
@@ -37,76 +37,172 @@ namespace terminal_chess.Core
                         {
                             if (j == 0 || j == 7)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Rook, 1 - Side, 5, Side == PlayerColor.White ? "bR" : "wR", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Rook,
+                                    1 - Side,
+                                    5,
+                                    Side == PlayerColor.White ? "bR" : "wR",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 1 || j == 6)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Knight, 1 - Side, 3, Side == PlayerColor.White ? "bN" : "wN", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Knight,
+                                    1 - Side,
+                                    3,
+                                    Side == PlayerColor.White ? "bN" : "wN",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 2 || j == 5)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Bishop, 1 - Side, 3, Side == PlayerColor.White ? "bB" : "wB", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Bishop,
+                                    1 - Side,
+                                    3,
+                                    Side == PlayerColor.White ? "bB" : "wB",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 3)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Queen, 1 - Side, 9, Side == PlayerColor.White ? "bQ" : "wK", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Queen,
+                                    1 - Side,
+                                    9,
+                                    Side == PlayerColor.White ? "bQ" : "wK",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 4)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.King, 1 - Side, 0, Side == PlayerColor.White ? "bK" : "wQ", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.King,
+                                    1 - Side,
+                                    0,
+                                    Side == PlayerColor.White ? "bK" : "wQ",
+                                    new Position(i, j)
+                                );
                             }
                         }
 
                         if (i == 1)
                         {
-                            BoardChess[i, j] = new Piece(PieceType.Pawn, 1 - Side, 1, Side == PlayerColor.White ? "bP" : "wP", new Position(i, j));
+                            BoardChess[i, j] = new Piece(
+                                PieceType.Pawn,
+                                1 - Side,
+                                1,
+                                Side == PlayerColor.White ? "bP" : "wP",
+                                new Position(i, j)
+                            );
                         }
 
                         if (i == 6)
                         {
-                            BoardChess[i, j] = new Piece(PieceType.Pawn, Side, 1, Side == PlayerColor.White ? "wP" : "bP", new Position(i, j));
+                            BoardChess[i, j] = new Piece(
+                                PieceType.Pawn,
+                                Side,
+                                1,
+                                Side == PlayerColor.White ? "wP" : "bP",
+                                new Position(i, j)
+                            );
                         }
 
                         if (i == 7)
                         {
                             if (j == 0 || j == 7)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Rook, Side, 5, Side == PlayerColor.White ? "wR" : "bR", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Rook,
+                                    Side,
+                                    5,
+                                    Side == PlayerColor.White ? "wR" : "bR",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 1 || j == 6)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Knight, Side, 3, Side == PlayerColor.White ? "wN" : "bN", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Knight,
+                                    Side,
+                                    3,
+                                    Side == PlayerColor.White ? "wN" : "bN",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 2 || j == 5)
                             {
-                                BoardChess[i, j] = new Piece(PieceType.Bishop, Side, 3, Side == PlayerColor.White ? "wB" : "bB", new Position(i, j));
+                                BoardChess[i, j] = new Piece(
+                                    PieceType.Bishop,
+                                    Side,
+                                    3,
+                                    Side == PlayerColor.White ? "wB" : "bB",
+                                    new Position(i, j)
+                                );
                             }
 
                             if (j == 3 || j == 4)
                                 if (Side == PlayerColor.White)
                                 {
-                                    BoardChess[i, 3] = new Piece(PieceType.Queen, Side, 9, "wQ", new Position(i, 3));
-                                    BoardChess[i, 4] = new Piece(PieceType.King, Side, 0, "wK", new Position(i, 4));
+                                    BoardChess[i, 3] = new Piece(
+                                        PieceType.Queen,
+                                        Side,
+                                        9,
+                                        "wQ",
+                                        new Position(i, 3)
+                                    );
+                                    BoardChess[i, 4] = new Piece(
+                                        PieceType.King,
+                                        Side,
+                                        0,
+                                        "wK",
+                                        new Position(i, 4)
+                                    );
                                 }
                                 else
                                 {
-                                    BoardChess[i, 3] = new Piece(PieceType.King, Side, 0, "bK", new Position(i, 3));
-                                    BoardChess[i, 4] = new Piece(PieceType.Queen, Side, 9, "bQ", new Position(i, 4));
+                                    BoardChess[i, 3] = new Piece(
+                                        PieceType.King,
+                                        Side,
+                                        0,
+                                        "bK",
+                                        new Position(i, 3)
+                                    );
+                                    BoardChess[i, 4] = new Piece(
+                                        PieceType.Queen,
+                                        Side,
+                                        9,
+                                        "bQ",
+                                        new Position(i, 4)
+                                    );
                                 }
                         }
                     }
                     else
                     {
                         if (i % 2 == 0)
-                            BoardChess[i, j] = new Piece(PieceType.None, PlayerColor.None, 0, j % 2 == 0 ? "⚪" : "⚫", new Position(i, j));
+                            BoardChess[i, j] = new Piece(
+                                PieceType.None,
+                                PlayerColor.None,
+                                0,
+                                j % 2 == 0 ? "⚪" : "⚫",
+                                new Position(i, j)
+                            );
                         else
-                            BoardChess[i, j] = new Piece(PieceType.None, PlayerColor.None, 0, j % 2 == 0 ? "⚫" : "⚪", new Position(i, j));
+                            BoardChess[i, j] = new Piece(
+                                PieceType.None,
+                                PlayerColor.None,
+                                0,
+                                j % 2 == 0 ? "⚫" : "⚪",
+                                new Position(i, j)
+                            );
                     }
                 }
             }
@@ -119,7 +215,8 @@ namespace terminal_chess.Core
 
         public Piece GetPiece(Position p)
         {
-            if (!IsInBounds(p)) return null;
+            if (!IsInBounds(p))
+                return null;
             return BoardChess[p.Row, p.Col];
         }
 
@@ -127,17 +224,18 @@ namespace terminal_chess.Core
         {
             List<Piece> pieces = new List<Piece>();
             for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    if (BoardChess[i, j].Type == type && BoardChess[i, j].Color == color)
-                        pieces.Add(BoardChess[i, j]);
-                }
+            for (int j = 0; j < 8; j++)
+            {
+                if (BoardChess[i, j].Type == type && BoardChess[i, j].Color == color)
+                    pieces.Add(BoardChess[i, j]);
+            }
             return pieces;
         }
 
         public string ConvertPositionToNotation(Position pos)
         {
-            if (!IsInBounds(pos)) return null;
+            if (!IsInBounds(pos))
+                return null;
             return $"{(char)(pos.Col + 97)}{8 - pos.Row}";
         }
 
@@ -163,12 +261,18 @@ namespace terminal_chess.Core
         {
             switch (char.ToUpper(pieceChar))
             {
-                case 'K': return PieceType.King;
-                case 'Q': return PieceType.Queen;
-                case 'R': return PieceType.Rook;
-                case 'B': return PieceType.Bishop;
-                case 'N': return PieceType.Knight;
-                default: return PieceType.None;
+                case 'K':
+                    return PieceType.King;
+                case 'Q':
+                    return PieceType.Queen;
+                case 'R':
+                    return PieceType.Rook;
+                case 'B':
+                    return PieceType.Bishop;
+                case 'N':
+                    return PieceType.Knight;
+                default:
+                    return PieceType.None;
             }
         }
 
@@ -176,12 +280,18 @@ namespace terminal_chess.Core
         {
             switch (type)
             {
-                case PieceType.Pawn: return 1;
-                case PieceType.Knight: return 3;
-                case PieceType.Bishop: return 3;
-                case PieceType.Rook: return 5;
-                case PieceType.Queen: return 9;
-                default: return 0;
+                case PieceType.Pawn:
+                    return 1;
+                case PieceType.Knight:
+                    return 3;
+                case PieceType.Bishop:
+                    return 3;
+                case PieceType.Rook:
+                    return 5;
+                case PieceType.Queen:
+                    return 9;
+                default:
+                    return 0;
             }
         }
 
@@ -238,12 +348,15 @@ namespace terminal_chess.Core
             return p1.Color != p2.Color;
         }
 
-        public bool IsSquareAttacked(Position position, PlayerColor atkColor)
+        public bool IsSquareAttacked(Position position)
         {
-            List<Move> moves = GetLegalMoves(atkColor, null);
+            List<Move> moves = GetLegalMoves(1 - Side, null);
             foreach (Move move in moves)
             {
-                if (move.To.Equals(position)) return true;
+                if (move.To.Equals(position) && GetPiece(move.From).Color != Side)
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -254,10 +367,10 @@ namespace terminal_chess.Core
             Piece movingPiece = GetPiece(pos);
             int[,] vectors =
             {
-                {0, 1},
-                {0, -1},
-                {1, 0},
-                {-1, 0}
+                { 0, 1 },
+                { 0, -1 },
+                { 1, 0 },
+                { -1, 0 },
             };
 
             for (int i = 0; i < vectors.GetLength(0); i++)
@@ -266,14 +379,20 @@ namespace terminal_chess.Core
                 while (true)
                 {
                     curPos = new Position(curPos.Row + vectors[i, 0], curPos.Col + vectors[i, 1]);
-                    if (!IsInBounds(curPos)) break;
+                    if (!IsInBounds(curPos))
+                        break;
 
                     Piece targetPiece = GetPiece(curPos);
-                    if (targetPiece.Color == movingPiece.Color) break;
+                    if (targetPiece.Color == movingPiece.Color)
+                        break;
 
                     moves.Add(new Move(pos, curPos));
                     // Break if reach a enemy piece
-                    if (targetPiece.Color != movingPiece.Color && targetPiece.Type != PieceType.None) break;
+                    if (
+                        targetPiece.Color != movingPiece.Color
+                        && targetPiece.Type != PieceType.None
+                    )
+                        break;
                 }
             }
 
@@ -286,10 +405,10 @@ namespace terminal_chess.Core
             Piece movingPiece = GetPiece(pos);
             int[,] vectors =
             {
-                {1, 1},
-                {1, -1},
-                {-1, 1},
-                {-1, -1}
+                { 1, 1 },
+                { 1, -1 },
+                { -1, 1 },
+                { -1, -1 },
             };
 
             for (int i = 0; i < vectors.GetLength(0); i++)
@@ -298,14 +417,20 @@ namespace terminal_chess.Core
                 while (true)
                 {
                     curPos = new Position(curPos.Row + vectors[i, 0], curPos.Col + vectors[i, 1]);
-                    if (!IsInBounds(curPos)) break;
+                    if (!IsInBounds(curPos))
+                        break;
 
                     Piece targetPiece = GetPiece(curPos);
-                    if (targetPiece.Color == movingPiece.Color) break;
+                    if (targetPiece.Color == movingPiece.Color)
+                        break;
 
                     moves.Add(new Move(pos, curPos));
                     // Break if reach a enemy piece
-                    if (targetPiece.Color != movingPiece.Color && targetPiece.Type != PieceType.None) break;
+                    if (
+                        targetPiece.Color != movingPiece.Color
+                        && targetPiece.Type != PieceType.None
+                    )
+                        break;
                 }
             }
 
@@ -318,14 +443,14 @@ namespace terminal_chess.Core
             Piece movingPiece = GetPiece(pos);
             int[,] vectors =
             {
-                {0, 1},
-                {0, -1},
-                {1, 0},
-                {-1, 0},
-                {1, 1},
-                {1, -1},
-                {-1, 1},
-                {-1, -1}
+                { 0, 1 },
+                { 0, -1 },
+                { 1, 0 },
+                { -1, 0 },
+                { 1, 1 },
+                { 1, -1 },
+                { -1, 1 },
+                { -1, -1 },
             };
 
             for (int i = 0; i < vectors.GetLength(0); i++)
@@ -334,14 +459,20 @@ namespace terminal_chess.Core
                 while (true)
                 {
                     curPos = new Position(curPos.Row + vectors[i, 0], curPos.Col + vectors[i, 1]);
-                    if (!IsInBounds(curPos)) break;
+                    if (!IsInBounds(curPos))
+                        break;
 
                     Piece targetPiece = GetPiece(curPos);
-                    if (targetPiece.Color == movingPiece.Color) break;
+                    if (targetPiece.Color == movingPiece.Color)
+                        break;
 
                     moves.Add(new Move(pos, curPos));
                     // Break if reach a enemy piece
-                    if (targetPiece.Color != movingPiece.Color && targetPiece.Type != PieceType.None) break;
+                    if (
+                        targetPiece.Color != movingPiece.Color
+                        && targetPiece.Type != PieceType.None
+                    )
+                        break;
                 }
             }
 
@@ -354,23 +485,25 @@ namespace terminal_chess.Core
             Piece movingPiece = GetPiece(pos);
             int[,] vectors =
             {
-                {2, 1},
-                {2, -1},
-                {-2, 1},
-                {-2, -1},
-                {1, 2},
-                {1, -2},
-                {-1, 2},
-                {-1, -2}
+                { 2, 1 },
+                { 2, -1 },
+                { -2, 1 },
+                { -2, -1 },
+                { 1, 2 },
+                { 1, -2 },
+                { -1, 2 },
+                { -1, -2 },
             };
 
             for (int i = 0; i < vectors.GetLength(0); i++)
             {
                 Position curPos = new Position(pos.Row + vectors[i, 0], pos.Col + vectors[i, 1]);
-                if (!IsInBounds(curPos)) continue;
+                if (!IsInBounds(curPos))
+                    continue;
 
                 Piece targetPiece = GetPiece(curPos);
-                if (targetPiece.Color == movingPiece.Color) continue;
+                if (targetPiece.Color == movingPiece.Color)
+                    continue;
 
                 moves.Add(new Move(pos, curPos));
             }
@@ -384,21 +517,34 @@ namespace terminal_chess.Core
             Piece movingPiece = GetPiece(pos);
             int dir = movingPiece.Color == PlayerColor.White ? -1 : 1;
             // 1-step moves
-            if (IsInBounds(new Position(pos.Row + dir, pos.Col)) && IsSquareEmpty(new Position(pos.Row + dir, pos.Col)))
+            if (
+                IsInBounds(new Position(pos.Row + dir, pos.Col))
+                && IsSquareEmpty(new Position(pos.Row + dir, pos.Col))
+            )
                 // Promotion
                 if (pos.Row + dir == 0)
                 {
                     moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Queen));
                     moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Rook));
-                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Bishop));
-                    moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Knight));
+                    moves.Add(
+                        new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Bishop)
+                    );
+                    moves.Add(
+                        new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Knight)
+                    );
                 }
                 else
                     moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col)));
 
             // 2-step moves
-            if ((pos.Row == 6 && Side == PlayerColor.White) || (pos.Row == 1 && Side == PlayerColor.Black))
-                if (IsSquareEmpty(new Position(pos.Row + dir, pos.Col)) && IsSquareEmpty(new Position(pos.Row + 2 * dir, pos.Col)))
+            if (
+                (pos.Row == 6 && Side == PlayerColor.White)
+                || (pos.Row == 1 && Side == PlayerColor.Black)
+            )
+                if (
+                    IsSquareEmpty(new Position(pos.Row + dir, pos.Col))
+                    && IsSquareEmpty(new Position(pos.Row + 2 * dir, pos.Col))
+                )
                 {
                     moves.Add(new Move(pos, new Position(pos.Row + 2 * dir, pos.Col)));
                 }
@@ -409,7 +555,10 @@ namespace terminal_chess.Core
             if (IsInBounds(diag1))
             {
                 Piece capturedPiece = GetPiece(diag1);
-                if (capturedPiece.Type != PieceType.None && IsEnemyPiece(movingPiece, capturedPiece))
+                if (
+                    capturedPiece.Type != PieceType.None
+                    && IsEnemyPiece(movingPiece, capturedPiece)
+                )
                     // Promotion
                     if (diag1.Row == 0)
                     {
@@ -424,7 +573,10 @@ namespace terminal_chess.Core
             if (IsInBounds(diag2))
             {
                 Piece capturedPiece = GetPiece(diag2);
-                if (capturedPiece.Type != PieceType.None && IsEnemyPiece(movingPiece, capturedPiece))
+                if (
+                    capturedPiece.Type != PieceType.None
+                    && IsEnemyPiece(movingPiece, capturedPiece)
+                )
                     // Promotion
                     if (diag2.Row == 0)
                     {
@@ -440,8 +592,10 @@ namespace terminal_chess.Core
             // En passant
             if (enPassantSq != null)
             {
-                if (pos.Row + dir == enPassantSq.Row &&
-                   (pos.Col - 1 == enPassantSq.Col || pos.Col + 1 == enPassantSq.Col))
+                if (
+                    pos.Row + dir == enPassantSq.Row
+                    && (pos.Col - 1 == enPassantSq.Col || pos.Col + 1 == enPassantSq.Col)
+                )
                     moves.Add(new Move(pos, enPassantSq));
             }
 
@@ -452,24 +606,27 @@ namespace terminal_chess.Core
         {
             List<Move> moves = new List<Move>();
             Piece movingPiece = GetPiece(pos);
-            int[,] vectors = {
-              {0,1},
-              {0,-1},
-              {1,0},
-              {-1,0},
-              {1,1},
-              {1,-1},
-              {-1,1},
-              {-1,-1}
+            int[,] vectors =
+            {
+                { 0, 1 },
+                { 0, -1 },
+                { 1, 0 },
+                { -1, 0 },
+                { 1, 1 },
+                { 1, -1 },
+                { -1, 1 },
+                { -1, -1 },
             };
 
             for (int i = 0; i < vectors.GetLength(0); i++)
             {
                 Position curPos = new Position(pos.Row + vectors[i, 0], pos.Col + vectors[i, 1]);
-                if (!IsInBounds(curPos)) continue;
+                if (!IsInBounds(curPos))
+                    continue;
 
                 Piece targetPiece = GetPiece(curPos);
-                if (targetPiece.Color == movingPiece.Color) continue;
+                if (targetPiece.Color == movingPiece.Color)
+                    continue;
 
                 moves.Add(new Move(pos, curPos));
             }
@@ -489,8 +646,12 @@ namespace terminal_chess.Core
 
                 if (obstacle1.Type == PieceType.None && obstacle2.Type == PieceType.None)
                 {
-                    moves.Add(new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 6)));
-                    moves.Add(new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 5)));
+                    moves.Add(
+                        new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 6))
+                    );
+                    moves.Add(
+                        new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 5))
+                    );
                 }
             }
 
@@ -506,12 +667,18 @@ namespace terminal_chess.Core
                 Piece obstacle2 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 2 * dir));
                 Piece obstacle3 = GetPiece(new Position(orgKingPos.Row, orgKingPos.Col + 3 * dir));
 
-                if (obstacle1.Type == PieceType.None &&
-                    obstacle2.Type == PieceType.None &&
-                    obstacle3.Type == PieceType.None)
+                if (
+                    obstacle1.Type == PieceType.None
+                    && obstacle2.Type == PieceType.None
+                    && obstacle3.Type == PieceType.None
+                )
                 {
-                    moves.Add(new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 2)));
-                    moves.Add(new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 3)));
+                    moves.Add(
+                        new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 2))
+                    );
+                    moves.Add(
+                        new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 3))
+                    );
                 }
             }
 
@@ -522,9 +689,11 @@ namespace terminal_chess.Core
         {
             List<Move> moves = new List<Move>();
             for (int i = 0; i < 8; i++)
+            {
                 for (int j = 0; j < 8; j++)
                 {
                     if (BoardChess[i, j].Type != PieceType.None && BoardChess[i, j].Color == color)
+                    {
                         switch (BoardChess[i, j].Type)
                         {
                             case PieceType.King:
@@ -543,10 +712,14 @@ namespace terminal_chess.Core
                                 moves.AddRange(GetRookMoves(BoardChess[i, j].Position));
                                 break;
                             default:
-                                moves.AddRange(GetPawnMoves(BoardChess[i, j].Position, enPassantSq));
+                                moves.AddRange(
+                                    GetPawnMoves(BoardChess[i, j].Position, enPassantSq)
+                                );
                                 break;
                         }
+                    }
                 }
+            }
             return moves;
         }
 
@@ -555,30 +728,70 @@ namespace terminal_chess.Core
             // Check if promotion move
             if (move.PromotionPiece != PieceType.None)
             {
-                this.BoardChess[move.To.Row, move.To.Col] = new Piece(move.PromotionPiece, Side, this.GetPointFromPieceType(move.PromotionPiece), this.GetDisplayFromTypeColor(move.PromotionPiece, Side), new Position(move.To.Row, move.To.Col));
+                this.BoardChess[move.To.Row, move.To.Col] = new Piece(
+                    move.PromotionPiece,
+                    Side,
+                    this.GetPointFromPieceType(move.PromotionPiece),
+                    this.GetDisplayFromTypeColor(move.PromotionPiece, Side),
+                    new Position(move.To.Row, move.To.Col)
+                );
             }
             else
             {
-                this.BoardChess[move.To.Row, move.To.Col] = this.BoardChess[move.From.Row, move.From.Col];
-                this.BoardChess[move.To.Row, move.To.Col].Position = new Position(move.To.Row, move.To.Col);
+                this.BoardChess[move.To.Row, move.To.Col] = this.BoardChess[
+                    move.From.Row,
+                    move.From.Col
+                ];
+                this.BoardChess[move.To.Row, move.To.Col].Position = new Position(
+                    move.To.Row,
+                    move.To.Col
+                );
             }
             // Turn old position into none square
             int dir = Side == PlayerColor.White ? 1 : -1;
             if (move.From.Row % 2 == 0)
             {
-                this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
+                this.BoardChess[move.From.Row, move.From.Col] = new Piece(
+                    PieceType.None,
+                    PlayerColor.None,
+                    0,
+                    move.From.Col % 2 == 0 ? "⚪" : "⚫",
+                    move.From
+                );
                 // En Passant
-                if (this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn &&
-                move.To.Equals(enPassantSq))
-                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+                if (
+                    this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn
+                    && move.To.Equals(enPassantSq)
+                )
+                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(
+                        PieceType.None,
+                        PlayerColor.None,
+                        0,
+                        move.From.Col % 2 == 0 ? "⚫" : "⚪",
+                        move.From
+                    );
             }
             else
             {
-                this.BoardChess[move.From.Row, move.From.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚫" : "⚪", move.From);
+                this.BoardChess[move.From.Row, move.From.Col] = new Piece(
+                    PieceType.None,
+                    PlayerColor.None,
+                    0,
+                    move.From.Col % 2 == 0 ? "⚫" : "⚪",
+                    move.From
+                );
                 // En Passant
-                if (this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn &&
-                move.To.Equals(enPassantSq))
-                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(PieceType.None, PlayerColor.None, 0, move.From.Col % 2 == 0 ? "⚪" : "⚫", move.From);
+                if (
+                    this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.Pawn
+                    && move.To.Equals(enPassantSq)
+                )
+                    this.BoardChess[enPassantSq.Row + dir, enPassantSq.Col] = new Piece(
+                        PieceType.None,
+                        PlayerColor.None,
+                        0,
+                        move.From.Col % 2 == 0 ? "⚪" : "⚫",
+                        move.From
+                    );
             }
         }
 
@@ -586,7 +799,12 @@ namespace terminal_chess.Core
         {
             // Normalize user's input
             string originalInput = moveInput;
-            moveInput = moveInput.Trim().Replace("+", "").Replace("#", "").Replace("!", "").Replace("?", "");
+            moveInput = moveInput
+                .Trim()
+                .Replace("+", "")
+                .Replace("#", "")
+                .Replace("!", "")
+                .Replace("?", "");
 
             // Get legal moves
             List<Move> legalMoves = GetLegalMoves(Side, enPassantSq);
@@ -595,28 +813,32 @@ namespace terminal_chess.Core
             // Castle
             if (moveInput == "O-O" || moveInput == "0-0")
             {
-                if ((Side == PlayerColor.White && castling.WhiteCanCastleKingside) ||
-                    (Side == PlayerColor.Black && castling.BlackCanCastleKingside))
+                if (
+                    (Side == PlayerColor.White && castling.WhiteCanCastleKingside)
+                    || (Side == PlayerColor.Black && castling.BlackCanCastleKingside)
+                )
                 {
                     Position kingSq = new Position(Side == PlayerColor.White ? 7 : 0, 4);
                     Position square1 = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 1);
                     Position square2 = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 2);
                     Position rookSq = new Position(Side == PlayerColor.White ? 7 : 0, 4 + 3);
                     // Check if any enemy pieces can block or check on the king's castle road
-                    foreach (Move m in enemyLegalMoves)
-                    {
-                        Piece piece = GetPiece(m.From);
-                        if (m.To.Equals(kingSq) || m.To.Equals(square1) ||
-                            m.To.Equals(square2) || m.To.Equals(rookSq))
-                            if (piece.Type != PieceType.None && piece.Color != Side)
-                                return null;
-                    }
+                    if (
+                        IsSquareAttacked(kingSq)
+                        || IsSquareAttacked(square1)
+                        || IsSquareAttacked(square2)
+                        || IsSquareAttacked(rookSq)
+                    )
+                        return null;
+
                     Move kingMove = legalMoves.FirstOrDefault(move =>
-                        GetPiece(move.From).Type == PieceType.King &&
-                        move.To.Col - move.From.Col == 2);
+                        GetPiece(move.From).Type == PieceType.King
+                        && move.To.Col - move.From.Col == 2
+                    );
                     Move rookMove = legalMoves.FirstOrDefault(move =>
-                        GetPiece(move.From).Type == PieceType.Rook &&
-                        move.To.Col - move.From.Col == -2);
+                        GetPiece(move.From).Type == PieceType.Rook
+                        && move.To.Col - move.From.Col == -2
+                    );
                     // Move the rook
                     if (kingMove != null && rookMove != null)
                         this.MovePiece(rookMove, null);
@@ -626,8 +848,10 @@ namespace terminal_chess.Core
 
             if (moveInput == "O-O-O" || moveInput == "0-0-0")
             {
-                if ((Side == PlayerColor.White && castling.WhiteCanCastleQueenside) ||
-                      (Side == PlayerColor.Black && castling.BlackCanCastleQueenside))
+                if (
+                    (Side == PlayerColor.White && castling.WhiteCanCastleQueenside)
+                    || (Side == PlayerColor.Black && castling.BlackCanCastleQueenside)
+                )
                 {
                     Position kingSq = new Position(Side == PlayerColor.White ? 7 : 0, 4);
                     Position square1 = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 1);
@@ -635,20 +859,23 @@ namespace terminal_chess.Core
                     Position square3 = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 3);
                     Position rookSq = new Position(Side == PlayerColor.White ? 7 : 0, 4 - 4);
                     // Check if any enemy pieces can block or check on the king's castle road
-                    foreach (Move m in enemyLegalMoves)
-                    {
-                        Piece piece = GetPiece(m.From);
-                        if (m.To.Equals(kingSq) || m.To.Equals(square1) ||
-                            m.To.Equals(square2) || m.To.Equals(square3) || m.To.Equals(rookSq))
-                            if (piece.Type != PieceType.None && piece.Color != Side)
-                                return null;
-                    }
+                    if (
+                        IsSquareAttacked(kingSq)
+                        || IsSquareAttacked(square1)
+                        || IsSquareAttacked(square2)
+                        || IsSquareAttacked(square3)
+                        || IsSquareAttacked(rookSq)
+                    )
+                        return null;
+
                     Move kingMove = legalMoves.FirstOrDefault(move =>
-                        GetPiece(move.From).Type == PieceType.King &&
-                        move.To.Col - move.From.Col == -2);
+                        GetPiece(move.From).Type == PieceType.King
+                        && move.To.Col - move.From.Col == -2
+                    );
                     Move rookMove = legalMoves.FirstOrDefault(move =>
-                        GetPiece(move.From).Type == PieceType.Rook &&
-                        move.To.Col - move.From.Col == 3);
+                        GetPiece(move.From).Type == PieceType.Rook
+                        && move.To.Col - move.From.Col == 3
+                    );
                     // Move the rook
                     if (kingMove != null && rookMove != null)
                         this.MovePiece(rookMove, null);
@@ -663,7 +890,8 @@ namespace terminal_chess.Core
 
             // 1. Destination
             var destResult = FindAndParseDestinationSquare(moveInput);
-            if (destResult.pos == null) return null;
+            if (destResult.pos == null)
+                return null;
             Position destination = destResult.pos;
             // Change destination on black side (2-players mode)
             if (Side == PlayerColor.Black)
@@ -674,10 +902,13 @@ namespace terminal_chess.Core
             int destIndex = destResult.index;
 
             // Filter moves reaching the destination
-            candidateMoves = candidateMoves.Where(m => m.To.Row == destination.Row && m.To.Col == destination.Col).ToList();
+            candidateMoves = candidateMoves
+                .Where(m => m.To.Row == destination.Row && m.To.Col == destination.Col)
+                .ToList();
             //foreach (Move move in candidateMoves)
             //    Console.WriteLine(move);
-            if (candidateMoves.Count == 0) return null;
+            if (candidateMoves.Count == 0)
+                return null;
 
             string suffix = moveInput.Substring(destIndex + 2);
             string prefix = moveInput.Substring(0, destIndex);
@@ -687,7 +918,9 @@ namespace terminal_chess.Core
             {
                 char promotionChar = suffix[suffix.IndexOf('=') + 1];
                 PieceType promotionType = GetPieceTypeFromChar(promotionChar);
-                candidateMoves = candidateMoves.Where(m => m.PromotionPiece == promotionType).ToList();
+                candidateMoves = candidateMoves
+                    .Where(m => m.PromotionPiece == promotionType)
+                    .ToList();
             }
 
             // 3. PieceType
@@ -713,7 +946,10 @@ namespace terminal_chess.Core
                     if (disambiguatorStr.Length > 0)
                     {
                         char disambiguator = disambiguatorStr[0];
-                        int fromCol = Side == PlayerColor.White ? disambiguator - 'a' : 7 - ('h' - disambiguator);
+                        int fromCol =
+                            Side == PlayerColor.White
+                                ? disambiguator - 'a'
+                                : 7 - ('h' - disambiguator);
                         candidateMoves = candidateMoves.Where(m => m.From.Col == fromCol).ToList();
                     }
                 }
@@ -724,13 +960,20 @@ namespace terminal_chess.Core
                         char disambiguator = disambiguatorStr[1];
                         if (disambiguator >= 'a' && disambiguator <= 'h')
                         {
-                            int fromCol = Side == PlayerColor.White ? disambiguator - 'a' : 7 - ('h' - disambiguator);
-                            candidateMoves = candidateMoves.Where(m => m.From.Col == fromCol).ToList();
+                            int fromCol =
+                                Side == PlayerColor.White
+                                    ? disambiguator - 'a'
+                                    : 7 - ('h' - disambiguator);
+                            candidateMoves = candidateMoves
+                                .Where(m => m.From.Col == fromCol)
+                                .ToList();
                         }
                         else if (disambiguator >= '1' && disambiguator <= '8')
                         {
                             int fromRow = 8 - (disambiguator - '0');
-                            candidateMoves = candidateMoves.Where(m => m.From.Row == fromRow).ToList();
+                            candidateMoves = candidateMoves
+                                .Where(m => m.From.Row == fromRow)
+                                .ToList();
                         }
                     }
                 }
