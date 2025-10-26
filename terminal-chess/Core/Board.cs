@@ -522,7 +522,10 @@ namespace terminal_chess.Core
                 && IsSquareEmpty(new Position(pos.Row + dir, pos.Col))
             )
                 // Promotion
-                if (pos.Row + dir == 0)
+                if (
+                    (pos.Row + dir == 0 && Side == PlayerColor.White)
+                    || (pos.Row + dir == 7 && Side == PlayerColor.Black)
+                )
                 {
                     moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Queen));
                     moves.Add(new Move(pos, new Position(pos.Row + dir, pos.Col), PieceType.Rook));
@@ -542,7 +545,7 @@ namespace terminal_chess.Core
                 || (pos.Row == 1 && Side == PlayerColor.Black)
             )
                 if (
-                    IsSquareEmpty(new Position(pos.Row + dir, pos.Col))
+                    IsInBounds(new Position(pos.Row + 2 * dir, pos.Col))
                     && IsSquareEmpty(new Position(pos.Row + 2 * dir, pos.Col))
                 )
                 {
@@ -560,7 +563,10 @@ namespace terminal_chess.Core
                     && IsEnemyPiece(movingPiece, capturedPiece)
                 )
                     // Promotion
-                    if (diag1.Row == 0)
+                    if (
+                        (diag1.Row == 0 && Side == PlayerColor.White)
+                        || (diag1.Row == 7 && Side == PlayerColor.Black)
+                    )
                     {
                         moves.Add(new Move(pos, diag1, PieceType.Queen));
                         moves.Add(new Move(pos, diag1, PieceType.Rook));
@@ -578,7 +584,10 @@ namespace terminal_chess.Core
                     && IsEnemyPiece(movingPiece, capturedPiece)
                 )
                     // Promotion
-                    if (diag2.Row == 0)
+                    if (
+                        (diag2.Row == 0 && Side == PlayerColor.White)
+                        || (diag2.Row == 7 && Side == PlayerColor.Black)
+                    )
                     {
                         moves.Add(new Move(pos, diag2, PieceType.Queen));
                         moves.Add(new Move(pos, diag2, PieceType.Rook));
