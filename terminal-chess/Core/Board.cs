@@ -353,7 +353,7 @@ namespace terminal_chess.Core
             List<Move> moves = GetLegalMoves(1 - Side, null);
             foreach (Move move in moves)
             {
-                if (move.To.Equals(position) && GetPiece(move.From).Color != Side)
+                if (move.To.Equals(position))
                 {
                     return true;
                 }
@@ -611,7 +611,7 @@ namespace terminal_chess.Core
             return moves;
         }
 
-        public List<Move> GetKingMoves(Position pos)
+        public List<Move> GetKingMoves(Position pos, PlayerColor color)
         {
             List<Move> moves = new List<Move>();
             Piece movingPiece = GetPiece(pos);
@@ -641,8 +641,8 @@ namespace terminal_chess.Core
             }
 
             // Castle king side
-            Position orgKingPos = new Position(Side == PlayerColor.White ? 7 : 0, 4);
-            Position orgRookPos = new Position(Side == PlayerColor.White ? 7 : 0, 7);
+            Position orgKingPos = new Position(color == PlayerColor.White ? 7 : 0, 4);
+            Position orgRookPos = new Position(color == PlayerColor.White ? 7 : 0, 7);
             Piece piece1 = GetPiece(orgKingPos);
             Piece piece2 = GetPiece(orgRookPos);
             // Check original position
@@ -656,16 +656,16 @@ namespace terminal_chess.Core
                 if (obstacle1.Type == PieceType.None && obstacle2.Type == PieceType.None)
                 {
                     moves.Add(
-                        new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 6))
+                        new Move(orgKingPos, new Position(color == PlayerColor.White ? 7 : 0, 6))
                     );
                     moves.Add(
-                        new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 5))
+                        new Move(orgRookPos, new Position(color == PlayerColor.White ? 7 : 0, 5))
                     );
                 }
             }
 
             // Castle queen side
-            Position orgRookPosQ = new Position(Side == PlayerColor.White ? 7 : 0, 0);
+            Position orgRookPosQ = new Position(color == PlayerColor.White ? 7 : 0, 0);
             Piece piece3 = GetPiece(orgRookPos);
             // Check original position
             if (piece1.Type == PieceType.King && piece3.Type == PieceType.Rook)
@@ -683,10 +683,10 @@ namespace terminal_chess.Core
                 )
                 {
                     moves.Add(
-                        new Move(orgKingPos, new Position(Side == PlayerColor.White ? 7 : 0, 2))
+                        new Move(orgKingPos, new Position(color == PlayerColor.White ? 7 : 0, 2))
                     );
                     moves.Add(
-                        new Move(orgRookPos, new Position(Side == PlayerColor.White ? 7 : 0, 3))
+                        new Move(orgRookPos, new Position(color == PlayerColor.White ? 7 : 0, 3))
                     );
                 }
             }
@@ -706,7 +706,7 @@ namespace terminal_chess.Core
                         switch (BoardChess[i, j].Type)
                         {
                             case PieceType.King:
-                                moves.AddRange(GetKingMoves(BoardChess[i, j].Position));
+                                moves.AddRange(GetKingMoves(BoardChess[i, j].Position, color));
                                 break;
                             case PieceType.Queen:
                                 moves.AddRange(GetQueenMoves(BoardChess[i, j].Position));
