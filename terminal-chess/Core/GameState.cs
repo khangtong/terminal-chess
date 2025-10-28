@@ -37,7 +37,7 @@ namespace terminal_chess.Core
         Checkmate,
         Stalemate,
         DrawByRepetition,
-        DrawByFiftyMoveRule
+        DrawByFiftyMoveRule,
     }
 
     public class GameState
@@ -85,7 +85,10 @@ namespace terminal_chess.Core
                     Console.Write(" " + (8 - i) + " ");
                     for (int j = 0; j < 8; j++)
                     {
-                        Console.Write(state.Board.BoardChess[i, j].Display + "  ");
+                        if (state.Board.BoardChess[i, j].Type != PieceType.None)
+                            Console.Write(state.Board.BoardChess[i, j].Display + "   ");
+                        else
+                            Console.Write(state.Board.BoardChess[i, j].Display + "  ");
                     }
                     Console.WriteLine("");
                 }
@@ -98,7 +101,10 @@ namespace terminal_chess.Core
                     Console.Write(" " + (7 - i + 1) + " ");
                     for (int j = 7; j >= 0; j--)
                     {
-                        Console.Write(state.Board.BoardChess[i, j].Display + "  ");
+                        if (state.Board.BoardChess[i, j].Type != PieceType.None)
+                            Console.Write(state.Board.BoardChess[i, j].Display + "   ");
+                        else
+                            Console.Write(state.Board.BoardChess[i, j].Display + "  ");
                     }
                     Console.WriteLine("");
                 }
@@ -146,8 +152,10 @@ namespace terminal_chess.Core
             newHash ^= Zobrist.PieceKeys[movedPieceIndex, toSquareIndex];
 
             // XOR remove captured piece
-            if (Board.BoardChess[move.To.Row, move.To.Col].Type != PieceType.None &&
-                Board.BoardChess[move.To.Row, move.To.Col].Color != CurrentPlayer)
+            if (
+                Board.BoardChess[move.To.Row, move.To.Col].Type != PieceType.None
+                && Board.BoardChess[move.To.Row, move.To.Col].Color != CurrentPlayer
+            )
             {
                 Piece capturedPiece = Board.BoardChess[move.To.Row, move.To.Col];
                 int capturedPieceIndex = GetPieceIndex(capturedPiece);
@@ -186,13 +194,13 @@ namespace terminal_chess.Core
                 if (movedPiece.Position.Col == 0)
                 {
                     if (CurrentPlayer == PlayerColor.White)
-                    {// XOR remove castle rights
+                    { // XOR remove castle rights
                         if (CastlingRights.WhiteCanCastleQueenside)
                             newHash ^= Zobrist.CastlingKeys[1];
                         newGameState.CastlingRights.WhiteCanCastleQueenside = false;
                     }
                     else
-                    {// XOR remove castle rights
+                    { // XOR remove castle rights
                         if (CastlingRights.BlackCanCastleKingside)
                             newHash ^= Zobrist.CastlingKeys[2];
                         newGameState.CastlingRights.BlackCanCastleKingside = false;
@@ -201,13 +209,13 @@ namespace terminal_chess.Core
                 else if (movedPiece.Position.Col == 7)
                 {
                     if (CurrentPlayer == PlayerColor.White)
-                    {// XOR remove castle rights
+                    { // XOR remove castle rights
                         if (CastlingRights.WhiteCanCastleKingside)
                             newHash ^= Zobrist.CastlingKeys[0];
                         newGameState.CastlingRights.WhiteCanCastleKingside = false;
                     }
                     else
-                    {// XOR remove castle rights
+                    { // XOR remove castle rights
                         if (CastlingRights.BlackCanCastleQueenside)
                             newHash ^= Zobrist.CastlingKeys[3];
                         newGameState.CastlingRights.BlackCanCastleQueenside = false;
@@ -218,14 +226,29 @@ namespace terminal_chess.Core
             // En Passant
             if (movedPiece.Type == PieceType.Pawn && Math.Abs(move.To.Row - move.From.Row) == 2)
             {
-                Piece piece1 = move.To.Col + 1 < 8 ? Board.BoardChess[move.To.Row, move.To.Col + 1] : null;
-                Piece piece2 = move.To.Col - 1 >= 0 ? Board.BoardChess[move.To.Row, move.To.Col - 1] : null;
-                if ((piece1 != null && piece1.Type == PieceType.Pawn && piece1.Color != CurrentPlayer) ||
-                    (piece2 != null && piece2.Type == PieceType.Pawn && piece2.Color != CurrentPlayer))
+                Piece piece1 =
+                    move.To.Col + 1 < 8 ? Board.BoardChess[move.To.Row, move.To.Col + 1] : null;
+                Piece piece2 =
+                    move.To.Col - 1 >= 0 ? Board.BoardChess[move.To.Row, move.To.Col - 1] : null;
+                if (
+                    (
+                        piece1 != null
+                        && piece1.Type == PieceType.Pawn
+                        && piece1.Color != CurrentPlayer
+                    )
+                    || (
+                        piece2 != null
+                        && piece2.Type == PieceType.Pawn
+                        && piece2.Color != CurrentPlayer
+                    )
+                )
                 {
                     // Create en passant move on the new game state
                     int dir = 1 - CurrentPlayer == PlayerColor.White ? -1 : 1;
-                    newGameState.EnPassantTargetSquare = new Position(move.To.Row + dir, move.To.Col);
+                    newGameState.EnPassantTargetSquare = new Position(
+                        move.To.Row + dir,
+                        move.To.Col
+                    );
                     newHash ^= Zobrist.EnPassantFileKeys[newGameState.EnPassantTargetSquare.Col];
                 }
             }
@@ -294,10 +317,14 @@ namespace terminal_chess.Core
             }
 
             // 3. XOR quyền nhập thành
-            if (CastlingRights.WhiteCanCastleKingside) hash ^= Zobrist.CastlingKeys[0];
-            if (CastlingRights.WhiteCanCastleQueenside) hash ^= Zobrist.CastlingKeys[1];
-            if (CastlingRights.BlackCanCastleKingside) hash ^= Zobrist.CastlingKeys[2];
-            if (CastlingRights.BlackCanCastleQueenside) hash ^= Zobrist.CastlingKeys[3];
+            if (CastlingRights.WhiteCanCastleKingside)
+                hash ^= Zobrist.CastlingKeys[0];
+            if (CastlingRights.WhiteCanCastleQueenside)
+                hash ^= Zobrist.CastlingKeys[1];
+            if (CastlingRights.BlackCanCastleKingside)
+                hash ^= Zobrist.CastlingKeys[2];
+            if (CastlingRights.BlackCanCastleQueenside)
+                hash ^= Zobrist.CastlingKeys[3];
 
             // 4. XOR ô bắt tốt qua đường
             if (EnPassantTargetSquare != null)

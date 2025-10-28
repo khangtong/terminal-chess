@@ -41,7 +41,6 @@ namespace terminal_chess.Core
                                     PieceType.Rook,
                                     1 - Side,
                                     5,
-                                    Side == PlayerColor.White ? "bR" : "wR",
                                     new Position(i, j)
                                 );
                             }
@@ -52,7 +51,6 @@ namespace terminal_chess.Core
                                     PieceType.Knight,
                                     1 - Side,
                                     3,
-                                    Side == PlayerColor.White ? "bN" : "wN",
                                     new Position(i, j)
                                 );
                             }
@@ -63,7 +61,6 @@ namespace terminal_chess.Core
                                     PieceType.Bishop,
                                     1 - Side,
                                     3,
-                                    Side == PlayerColor.White ? "bB" : "wB",
                                     new Position(i, j)
                                 );
                             }
@@ -74,7 +71,6 @@ namespace terminal_chess.Core
                                     PieceType.Queen,
                                     1 - Side,
                                     9,
-                                    Side == PlayerColor.White ? "bQ" : "wK",
                                     new Position(i, j)
                                 );
                             }
@@ -85,7 +81,6 @@ namespace terminal_chess.Core
                                     PieceType.King,
                                     1 - Side,
                                     0,
-                                    Side == PlayerColor.White ? "bK" : "wQ",
                                     new Position(i, j)
                                 );
                             }
@@ -97,7 +92,6 @@ namespace terminal_chess.Core
                                 PieceType.Pawn,
                                 1 - Side,
                                 1,
-                                Side == PlayerColor.White ? "bP" : "wP",
                                 new Position(i, j)
                             );
                         }
@@ -108,7 +102,6 @@ namespace terminal_chess.Core
                                 PieceType.Pawn,
                                 Side,
                                 1,
-                                Side == PlayerColor.White ? "wP" : "bP",
                                 new Position(i, j)
                             );
                         }
@@ -121,7 +114,6 @@ namespace terminal_chess.Core
                                     PieceType.Rook,
                                     Side,
                                     5,
-                                    Side == PlayerColor.White ? "wR" : "bR",
                                     new Position(i, j)
                                 );
                             }
@@ -132,7 +124,6 @@ namespace terminal_chess.Core
                                     PieceType.Knight,
                                     Side,
                                     3,
-                                    Side == PlayerColor.White ? "wN" : "bN",
                                     new Position(i, j)
                                 );
                             }
@@ -143,7 +134,6 @@ namespace terminal_chess.Core
                                     PieceType.Bishop,
                                     Side,
                                     3,
-                                    Side == PlayerColor.White ? "wB" : "bB",
                                     new Position(i, j)
                                 );
                             }
@@ -155,14 +145,12 @@ namespace terminal_chess.Core
                                         PieceType.Queen,
                                         Side,
                                         9,
-                                        "wQ",
                                         new Position(i, 3)
                                     );
                                     BoardChess[i, 4] = new Piece(
                                         PieceType.King,
                                         Side,
                                         0,
-                                        "wK",
                                         new Position(i, 4)
                                     );
                                 }
@@ -172,14 +160,12 @@ namespace terminal_chess.Core
                                         PieceType.King,
                                         Side,
                                         0,
-                                        "bK",
                                         new Position(i, 3)
                                     );
                                     BoardChess[i, 4] = new Piece(
                                         PieceType.Queen,
                                         Side,
                                         9,
-                                        "bQ",
                                         new Position(i, 4)
                                     );
                                 }
@@ -192,16 +178,16 @@ namespace terminal_chess.Core
                                 PieceType.None,
                                 PlayerColor.None,
                                 0,
-                                j % 2 == 0 ? "⚪" : "⚫",
-                                new Position(i, j)
+                                new Position(i, j),
+                                j % 2 == 0 ? "⚪" : "⚫"
                             );
                         else
                             BoardChess[i, j] = new Piece(
                                 PieceType.None,
                                 PlayerColor.None,
                                 0,
-                                j % 2 == 0 ? "⚫" : "⚪",
-                                new Position(i, j)
+                                new Position(i, j),
+                                j % 2 == 0 ? "⚫" : "⚪"
                             );
                     }
                 }
@@ -293,49 +279,6 @@ namespace terminal_chess.Core
                 default:
                     return 0;
             }
-        }
-
-        public string GetDisplayFromTypeColor(PieceType type, PlayerColor color)
-        {
-            string display = "";
-
-            switch (color)
-            {
-                case PlayerColor.White:
-                    display += "w";
-                    break;
-                case PlayerColor.Black:
-                    display += "b";
-                    break;
-                default:
-                    break;
-            }
-
-            switch (type)
-            {
-                case PieceType.Pawn:
-                    display += "P";
-                    break;
-                case PieceType.Knight:
-                    display += "N";
-                    break;
-                case PieceType.Bishop:
-                    display += "B";
-                    break;
-                case PieceType.Rook:
-                    display += "R";
-                    break;
-                case PieceType.Queen:
-                    display += "Q";
-                    break;
-                case PieceType.King:
-                    display += "K";
-                    break;
-                default:
-                    break;
-            }
-
-            return display;
         }
 
         public bool IsSquareEmpty(Position pos)
@@ -741,7 +684,6 @@ namespace terminal_chess.Core
                     move.PromotionPiece,
                     Side,
                     this.GetPointFromPieceType(move.PromotionPiece),
-                    this.GetDisplayFromTypeColor(move.PromotionPiece, Side),
                     new Position(move.To.Row, move.To.Col)
                 );
             }
@@ -764,8 +706,8 @@ namespace terminal_chess.Core
                     PieceType.None,
                     PlayerColor.None,
                     0,
-                    move.From.Col % 2 == 0 ? "⚪" : "⚫",
-                    move.From
+                    move.From,
+                    move.From.Col % 2 == 0 ? "⚪" : "⚫"
                 );
                 // En Passant
                 if (
@@ -776,8 +718,8 @@ namespace terminal_chess.Core
                         PieceType.None,
                         PlayerColor.None,
                         0,
-                        move.From.Col % 2 == 0 ? "⚫" : "⚪",
-                        move.From
+                        move.From,
+                        move.From.Col % 2 == 0 ? "⚫" : "⚪"
                     );
             }
             else
@@ -786,8 +728,8 @@ namespace terminal_chess.Core
                     PieceType.None,
                     PlayerColor.None,
                     0,
-                    move.From.Col % 2 == 0 ? "⚫" : "⚪",
-                    move.From
+                    move.From,
+                    move.From.Col % 2 == 0 ? "⚫" : "⚪"
                 );
                 // En Passant
                 if (
@@ -798,8 +740,8 @@ namespace terminal_chess.Core
                         PieceType.None,
                         PlayerColor.None,
                         0,
-                        move.From.Col % 2 == 0 ? "⚪" : "⚫",
-                        move.From
+                        move.From,
+                        move.From.Col % 2 == 0 ? "⚪" : "⚫"
                     );
             }
         }
@@ -817,7 +759,6 @@ namespace terminal_chess.Core
 
             // Get legal moves
             List<Move> legalMoves = GetLegalMoves(Side, enPassantSq);
-            List<Move> enemyLegalMoves = GetLegalMoves(1 - Side, enPassantSq);
 
             // Castle
             if (moveInput == "O-O" || moveInput == "0-0")
@@ -914,8 +855,6 @@ namespace terminal_chess.Core
             candidateMoves = candidateMoves
                 .Where(m => m.To.Row == destination.Row && m.To.Col == destination.Col)
                 .ToList();
-            //foreach (Move move in candidateMoves)
-            //    Console.WriteLine(move);
             if (candidateMoves.Count == 0)
                 return null;
 
@@ -945,6 +884,10 @@ namespace terminal_chess.Core
 
             // Filter moves base on type
             candidateMoves = candidateMoves.Where(m => GetPiece(m.From).Type == pieceType).ToList();
+
+            // Check if kings move to attacked square
+            if (pieceType == PieceType.King && IsSquareAttacked(candidateMoves.FirstOrDefault().To))
+                return null;
 
             // Disambiguation
             if (candidateMoves.Count > 1)

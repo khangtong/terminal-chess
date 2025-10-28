@@ -8,11 +8,13 @@ using terminal_chess.Core.Models;
 Console.OutputEncoding = Encoding.UTF8;
 
 // Play
-Console.WriteLine(@" _____________  __  ________  _____   __     _______ ______________
+Console.WriteLine(
+    @" _____________  __  ________  _____   __     _______ ______________
 /_  __/ __/ _ \/  |/  /  _/ |/ / _ | / /    / ___/ // / __/ __/ __/
  / / / _// , _/ /|_/ // //    / __ |/ /__  / /__/ _  / _/_\ \_\ \  
 /_/ /___/_/|_/_/  /_/___/_/|_/_/ |_/____/  \___/_//_/___/___/___/  
-                                                                   ");
+                                                                   "
+);
 bool isValid = true;
 do
 {
@@ -41,14 +43,19 @@ do
                 //{
                 Console.WriteLine($"{playerStr} to move:");
                 string moveInput = Console.ReadLine();
-                Move parsedMove = game.Board.ParseMove(moveInput, game.CastlingRights, game.EnPassantTargetSquare);
+                Move parsedMove = game.Board.ParseMove(
+                    moveInput,
+                    game.CastlingRights,
+                    game.EnPassantTargetSquare
+                );
                 if (parsedMove == null)
                 {
                     Console.WriteLine("INVALID MOVE!");
                     render = false;
                     continue;
                 }
-                else render = true;
+                else
+                    render = true;
 
                 game = game.MakeMove(parsedMove);
                 //}
