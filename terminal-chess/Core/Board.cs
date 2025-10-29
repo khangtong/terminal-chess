@@ -11,6 +11,7 @@ namespace terminal_chess.Core
     {
         public static PlayerColor Side;
         public Piece[,] BoardChess = new Piece[8, 8];
+        public Position KingPos;
 
         public Board()
         {
@@ -19,6 +20,7 @@ namespace terminal_chess.Core
 
         public Board(Board board)
         {
+            KingPos = new Position(board.KingPos);
             BoardChess = new Piece[8, 8];
             for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
@@ -650,6 +652,8 @@ namespace terminal_chess.Core
                         {
                             case PieceType.King:
                                 moves.AddRange(GetKingMoves(BoardChess[i, j].Position, color));
+                                if (color == Side)
+                                    KingPos = new Position(i, j);
                                 break;
                             case PieceType.Queen:
                                 moves.AddRange(GetQueenMoves(BoardChess[i, j].Position));
@@ -675,6 +679,15 @@ namespace terminal_chess.Core
             return moves;
         }
 
+        public bool IsKingInAttackAfterMove(Move move)
+        {
+            Board tempBoard = new Board(this);
+            tempBoard.MovePiece(move, null);
+            if (tempBoard.IsSquareAttacked(tempBoard.KingPos))
+                return true;
+            return false;
+        }
+
         public void MovePiece(Move move, Position? enPassantSq)
         {
             // Check if promotion move
@@ -689,10 +702,12 @@ namespace terminal_chess.Core
             }
             else
             {
+                // Move the piece to target square
                 this.BoardChess[move.To.Row, move.To.Col] = this.BoardChess[
                     move.From.Row,
                     move.From.Col
                 ];
+                // Update the piece's position
                 this.BoardChess[move.To.Row, move.To.Col].Position = new Position(
                     move.To.Row,
                     move.To.Col
@@ -744,6 +759,9 @@ namespace terminal_chess.Core
                         move.From.Col % 2 == 0 ? "⚪" : "⚫"
                     );
             }
+            // Update the king's position if the piece type is king
+            if (this.BoardChess[move.To.Row, move.To.Col].Type == PieceType.King)
+                this.KingPos = new Position(move.To);
         }
 
         public Move ParseMove(string moveInput, CastlingRights castling, Position? enPassantSq)
@@ -931,7 +949,13 @@ namespace terminal_chess.Core
                 }
             }
 
-            return candidateMoves.Count == 1 ? candidateMoves[0] : null;
+            // Check if the king is under attacked after the move
+            Move finalMove = candidateMoves.Count == 1 ? candidateMoves[0] : null;
+            if (finalMove != null)
+                if (IsKingInAttackAfterMove(finalMove))
+                    return null;
+
+            return finalMove;
         }
     }
 }
