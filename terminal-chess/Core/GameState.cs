@@ -48,7 +48,7 @@ namespace terminal_chess.Core
         public Position? EnPassantTargetSquare;
         public int HalfmoveClock;
         public int FullmoveNumber;
-        public GameStatus Status;
+        public static GameStatus Status = GameStatus.Ongoing;
         public ulong ZobristHash;
         public Dictionary<ulong, int> PositionHistory;
 
@@ -60,7 +60,6 @@ namespace terminal_chess.Core
             CastlingRights = new CastlingRights();
             HalfmoveClock = 0;
             FullmoveNumber = 1;
-            Status = GameStatus.Ongoing;
             PositionHistory = new Dictionary<ulong, int>();
         }
 
@@ -71,7 +70,6 @@ namespace terminal_chess.Core
             CastlingRights = new CastlingRights(gameState.CastlingRights);
             HalfmoveClock = gameState.HalfmoveClock;
             FullmoveNumber = gameState.FullmoveNumber;
-            Status = gameState.Status;
             PositionHistory = new Dictionary<ulong, int>(gameState.PositionHistory);
         }
 
@@ -136,7 +134,7 @@ namespace terminal_chess.Core
                 newGameState.HalfmoveClock = 0;
             if (HalfmoveClock == 100)
             {
-                newGameState.Status = GameStatus.DrawByFiftyMoveRule;
+                Status = GameStatus.DrawByFiftyMoveRule;
             }
 
             // XOR remove old enpassant square on the new game state

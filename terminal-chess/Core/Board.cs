@@ -679,7 +679,7 @@ namespace terminal_chess.Core
             return moves;
         }
 
-        public bool IsKingInAttackAfterMove(Move move)
+        public bool IsKingInCheckAfterMove(Move move)
         {
             Board tempBoard = new Board(this);
             tempBoard.MovePiece(move, null);
@@ -776,7 +776,13 @@ namespace terminal_chess.Core
                 .Replace("?", "");
 
             // Get legal moves
-            List<Move> legalMoves = GetLegalMoves(Side, enPassantSq);
+            List<Move> pseudoLegalMoves = GetLegalMoves(Side, enPassantSq);
+            List<Move> legalMoves = pseudoLegalMoves
+                .Where(move => !IsKingInCheckAfterMove(move))
+                .ToList();
+            // Checkmate
+            if (legalMoves.Count == 0)
+                GameState.Status = GameStatus.Checkmate;
 
             // Castle
             if (moveInput == "O-O" || moveInput == "0-0")
@@ -903,10 +909,6 @@ namespace terminal_chess.Core
             // Filter moves base on type
             candidateMoves = candidateMoves.Where(m => GetPiece(m.From).Type == pieceType).ToList();
 
-            // Check if kings move to attacked square
-            if (pieceType == PieceType.King && IsSquareAttacked(candidateMoves.FirstOrDefault().To))
-                return null;
-
             // Disambiguation
             if (candidateMoves.Count > 1)
             {
@@ -949,13 +951,7 @@ namespace terminal_chess.Core
                 }
             }
 
-            // Check if the king is under attacked after the move
-            Move finalMove = candidateMoves.Count == 1 ? candidateMoves[0] : null;
-            if (finalMove != null)
-                if (IsKingInAttackAfterMove(finalMove))
-                    return null;
-
-            return finalMove;
+            return candidateMoves.Count == 1 ? candidateMoves[0] : null;
         }
     }
 }

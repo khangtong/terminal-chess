@@ -34,13 +34,11 @@ do
             bool render = true;
 
             // Game loop
-            while (game.Status == GameStatus.Ongoing)
+            while (GameState.Status == GameStatus.Ongoing)
             {
                 string playerStr = game.CurrentPlayer == PlayerColor.White ? "White" : "Black";
                 if (render)
                     game.RenderBoard(game);
-                //if (game.CurrentPlayer == player)
-                //{
                 Console.WriteLine($"{playerStr} to move:");
                 string moveInput = Console.ReadLine();
                 Move parsedMove = game.Board.ParseMove(
@@ -48,6 +46,8 @@ do
                     game.CastlingRights,
                     game.EnPassantTargetSquare
                 );
+                if (GameState.Status == GameStatus.Checkmate)
+                    break;
                 if (parsedMove == null)
                 {
                     Console.WriteLine("INVALID MOVE!");
@@ -58,8 +58,8 @@ do
                     render = true;
 
                 game = game.MakeMove(parsedMove);
-                //}
             }
+            Console.WriteLine("THE GAME HAS ENDED!");
         }
         else
         {
